@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "3043131974",
+    "project_id": "mindguru-71d2f",
+    "storage_bucket": "mindguru-71d2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3043131974:android:cfa176ca9118f63a2ac047",
+        "android_client_info": {
+          "package_name": "app.mindguru.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3043131974-8hb3t2tj4bmdikqqmqtfmfjkoq5pvu9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGZD5gNKKiDj5aKTjB9GkaFV6tRM271pY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3043131974-8hb3t2tj4bmdikqqmqtfmfjkoq5pvu9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
