@@ -1,8 +1,5 @@
 package app.mindguru.android.ui.User
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -19,8 +16,8 @@ import app.mindguru.android.ui.chat.ChatBubble
 import app.mindguru.android.ui.components.ToolBar
 
 @Composable
-fun CallMentalHealthScreen(navigateNext:  () -> Unit, viewModel: UserViewModel = hiltViewModel(),
-        mainActivityViewModel: MainActivityViewModel = hiltViewModel()
+fun ShowMentalHealthScreen(navigateNext:  () -> Unit, viewModel: UserViewModel = hiltViewModel(),
+                           mainActivityViewModel: MainActivityViewModel = hiltViewModel()
                            ) {
     MentalHealthScreen(navigateNext, { mainActivityViewModel.exitApp() }) { viewModel.setSeverity(it) }
 }

@@ -38,7 +38,11 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -48,15 +52,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds =
-                if (DEBUG || Remote.checkGate("DEBUG")) 0 else 3600
-        }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        //remote config setDefaultsAsync
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        setup()
 
         var startDestination = if(viewModel.getSeverity() == "") "MentalHealthScreen" else if(Firebase.auth.uid != null) "ChatScreen" else "LoginScreen"
         if(Firebase.auth.uid != null){
@@ -93,6 +89,28 @@ class MainActivity : ComponentActivity() {
                     Navigation(navController = navController, startDestination=startDestination, isLoggedIn=isLoggedIn)
                 //}
             }
+        }
+    }
+
+    private fun setup(){
+        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds =
+                if (DEBUG || Remote.checkGate("DEBUG")) 0 else 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        //remote config setDefaultsAsync
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+            remoteConfig.fetchAndActivate().addOnCompleteListener {
+                if(it.isSuccessful){
+                    Logger.d("MainActivity", "Remote Config fetched and activated")
+                }else{
+                    Logger.e("MainActivity", "Remote Config fetch failed")
+                }
+            }.await()
         }
     }
 }

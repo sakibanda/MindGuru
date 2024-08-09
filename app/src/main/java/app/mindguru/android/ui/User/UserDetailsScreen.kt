@@ -1,9 +1,7 @@
 package app.mindguru.android.ui.User
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.Interaction
@@ -16,13 +14,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -44,20 +38,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.mindguru.android.R
 import app.mindguru.android.data.model.User
 import app.mindguru.android.ui.chat.ChatBubble
-import app.mindguru.android.ui.components.clickOnce
+import app.mindguru.android.ui.components.ToolBar
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 @Preview(showBackground = true)
 @Composable
@@ -66,11 +60,29 @@ fun UserDetailsScreenPreview() {
 }
 
 @Composable
-fun CallUserDetailsScreen(navigateNext : () -> Unit, viewModel: UserViewModel = hiltViewModel()) {
+fun ShowUserDetailsScreen(navigateNext : () -> Unit, viewModel: UserViewModel = hiltViewModel()) {
     UserDetailsScreen(navigateNext = navigateNext) { name, gender, dob, relationship, employment, country ->
         viewModel.updateUserDetails(name, gender, dob, relationship, country, employment)
         navigateNext()
     }
+}
+
+
+fun convertDateToMillis(date: String): Long? {
+    return try {
+        val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val parsedDate = formatter.parse(date)
+        parsedDate?.time
+    } catch (e: Exception) {
+        System.currentTimeMillis()
+    }
+}
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    return formatter.format(Date(millis))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,20 +91,29 @@ fun UserDetailsScreen(
     navigateNext: () -> Unit,
     updateUserDetails: (String, String, String, String, String, String) -> Unit
 ) {
+
     var name by remember { mutableStateOf( if(User.currentUser != null) User.currentUser?.name!! else "") }
     val datePickerState = rememberDatePickerState()
+    LaunchedEffect(Unit) {
+        User.currentUser?.dob?.let { dob ->
+            convertDateToMillis(dob)?.let { millis ->
+                datePickerState.selectedDateMillis = millis
+            }
+        }
+    }
     val dob = datePickerState.selectedDateMillis?.let {
         convertMillisToDate(it)
     } ?: ""
-    var gender by remember { mutableStateOf("") }
-    var relationship by remember { mutableStateOf("") }
-    var employment by remember { mutableStateOf("") }
-    var country by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf(if(User.currentUser != null)  User.currentUser!!.gender else "" ) }
+    var relationship by remember { mutableStateOf(if(User.currentUser != null)  User.currentUser!!.relationship else "" ) }
+    var employment by remember { mutableStateOf(if(User.currentUser != null)  User.currentUser!!.employment else "" ) }
+    var country by remember { mutableStateOf(if(User.currentUser != null)  User.currentUser!!.country else "" ) }
     var showDatePicker by remember { mutableStateOf(false) }
     val countries = remember { mutableStateOf(getCountries()) }
     val genderOptions = listOf("Male", "Female", "Other")
     val relationshipOptions = listOf("Married", "Single", "In Relationship")
     val employmentOptions = listOf("Employed", "Business", "Unemployed")
+
 
     if (showDatePicker) {
         Popup(
@@ -124,82 +145,92 @@ fun UserDetailsScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        ChatBubble(message = "Hi, I need more details about you to help you better. If you don't wish to provide you can skip to next step.", isUserMessage = false)
-
-        // Name
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        //Gender Type
-        DropdownMenuField(
-            label = "Gender",
-            options = genderOptions,
-            selectedOption = gender,
-            onOptionSelected = { gender = it }
-        )
-
-        // Date of Birth
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+    Column(Modifier.fillMaxSize()) {
+        ToolBar(icon = R.drawable.app_icon)
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showDatePicker = true }
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Date Of Birth:")
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = dob)
-            IconButton(onClick = { showDatePicker = true }) {
-                Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Date Of Birth")
+
+            ChatBubble(
+                message = "Hi, I need more details about you to help you better. Your data will be kept very private. If you don't wish to provide you can skip to next step.",
+                isUserMessage = false
+            )
+
+            // Name
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            //Gender Type
+            DropdownMenuField(
+                label = "Gender",
+                options = genderOptions,
+                selectedOption = gender,
+                onOptionSelected = { gender = it }
+            )
+
+            // Date of Birth
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showDatePicker = true }
+            ) {
+                Text(text = "Date Of Birth:")
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = dob)
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = "Select Date Of Birth"
+                    )
+                }
             }
-        }
 
-        // Relationship Type
-        DropdownMenuField(
-            label = "Relationship Type",
-            options = relationshipOptions,
-            selectedOption = relationship,
-            onOptionSelected = { relationship = it }
-        )
+            // Relationship Type
+            DropdownMenuField(
+                label = "Relationship Type",
+                options = relationshipOptions,
+                selectedOption = relationship,
+                onOptionSelected = { relationship = it }
+            )
 
-        // Employment Type
-        DropdownMenuField(
-            label = "Employment Type",
-            options = employmentOptions,
-            selectedOption = employment,
-            onOptionSelected = { employment = it }
-        )
+            // Employment Type
+            DropdownMenuField(
+                label = "Employment Type",
+                options = employmentOptions,
+                selectedOption = employment,
+                onOptionSelected = { employment = it }
+            )
 
-        // Country
-        DropdownMenuField(
-            label = "Country",
-            options = countries.value,
-            selectedOption = country,
-            onOptionSelected = { country = it }
-        )
+            // Country
+            DropdownMenuField(
+                label = "Country",
+                options = countries.value,
+                selectedOption = country,
+                onOptionSelected = { country = it }
+            )
 
-        // Buttons
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = { navigateNext() }) {
-                Text("Skip")
-            }
-            Button(onClick = {
-                updateUserDetails(name, gender, dob, relationship, employment, country)
-            }) {
-                Text("Next")
+            // Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = { navigateNext() }) {
+                    Text("Skip")
+                }
+                Button(onClick = {
+                    updateUserDetails(name, gender, dob, relationship, employment, country)
+                }) {
+                    Text("Submit")
+                }
             }
         }
     }
@@ -268,12 +299,6 @@ fun DropdownMenuField(
     }
 }
 
-
-
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
-}
 
 fun getCountries(): ArrayList<String> {
     val isoCountryCodes: Array<String> = Locale.getISOCountries()

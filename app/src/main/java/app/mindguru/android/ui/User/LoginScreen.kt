@@ -77,7 +77,7 @@ import java.util.UUID
 private const val TAG = "LoginScreen"
 
 @Composable
-fun CallLoginScreen(
+fun ShowLoginScreen(
     navigateNext: () -> Unit,
     viewModel: UserViewModel = hiltViewModel()) {
     var loginError = viewModel.error
@@ -125,8 +125,6 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
-            ChatBubble(message = "To continue, you can login or use guest mode ...", isUserMessage = false)
-
             Image(
                 painter = painterResource(R.drawable.app_icon),
                 contentDescription = stringResource(R.string.app_name),
@@ -167,15 +165,14 @@ fun LoginScreen(
                 )
 
             }
-
-
-
-            Spacer(modifier = Modifier.height(40.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                ChatBubble(message = "To continue, you can login or use guest mode ...", isUserMessage = false)
 
                 if (!isProcessing){
                     Spacer(modifier = Modifier.height(25.dp))

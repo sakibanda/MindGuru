@@ -12,6 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import app.mindguru.android.data.model.User
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -21,6 +22,30 @@ import java.util.Locale
 class Utils {
 
     companion object {
+        fun getFirstPrompt(): String{
+            val age  = 2024 - User.currentUser!!.dob.drop(6).toInt()
+            var userProfile = "Hi, "
+            User.currentUser!!.apply {
+                if(name != "" && dob != "" && gender != "" && employment != "" && country != "")
+                    userProfile = "My name is ${User.currentUser!!.name}, " +
+                            "I am $age years old, ${User.currentUser!!.gender}. My profession is ${User.currentUser!!.employment} and I am from ${User.currentUser!!.country}."
+                else {
+                    if (name != "")
+                        userProfile += "My name is ${User.currentUser!!.name}."
+                    if (dob != "")
+                        userProfile += "I am $age years old."
+                    if (gender != "")
+                        userProfile += "I am $gender. "
+                    if (employment != "")
+                        userProfile += "My profession is $employment. "
+                    if (country != "")
+                        userProfile += "I am from $country. "
+                }
+            }
+            val symptoms = "I am experiencing these ${User.currentUser!!.healthSeverity} symptoms: ${User.currentUser!!.symptoms}. "
+            val instructions = "Please provide me with the necessary help."
+            return userProfile + symptoms + instructions
+        }
 
         fun readJSONFromAsset(application: Context, fileName: String): String? {
             var json: String? = null

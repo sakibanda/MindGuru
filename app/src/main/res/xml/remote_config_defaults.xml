@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <defaults>
     <entry>
+        <key>DEBUG</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>WEB_CLIENT_ID</key>
         <value>3043131974-8hb3t2tj4bmdikqqmqtfmfjkoq5pvu9o.apps.googleusercontent.com</value>
     </entry>

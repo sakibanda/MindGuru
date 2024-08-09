@@ -1,16 +1,11 @@
 package app.mindguru.android.ui.Userimport
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
@@ -18,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import app.mindguru.android.ui.User.UserViewModel
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,14 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.mindguru.android.components.Logger
+import app.mindguru.android.data.model.User
 import app.mindguru.android.ui.chat.ChatBubble
 import app.mindguru.android.ui.components.clickOnce
 
 import my.nanihadesuka.compose.ColumnScrollbar
 
 @Composable
-fun CallSymptomsScreen(navigateNext: () -> Unit, viewModel: UserViewModel = hiltViewModel()) {
+fun ShowSymptomsScreen(navigateNext: () -> Unit, viewModel: UserViewModel = hiltViewModel()) {
     SymptomsScreen { symptoms ->
         viewModel.updateSymptoms(symptoms)
         navigateNext()
@@ -43,13 +40,24 @@ fun CallSymptomsScreen(navigateNext: () -> Unit, viewModel: UserViewModel = hilt
 @Preview (showBackground = true)
 @Composable
 fun SymptomsScreen(onSubmit: (String) -> Unit = {}) {
-    val options = listOf("Anxiety, Persistent Sadness or Depression", "Social Withdrawal or Loneliness", "Hallucinations or Overthinking", "Addiction", "Mood Swings","Changes in Appetite or Weight",
+    val options = listOf("Anxiety or Persistent Sadness or Depression", "Social Withdrawal or Loneliness", "Hallucinations or Overthinking", "Addiction", "Mood Swings","Changes in Appetite or Weight",
         "Personal Issues or Problems", "Feelings of Guilt or Worthlessness", "Sleep Disturbances", "Career Counselling", "Concentration and Memory Problems")
     val selectedOptions = remember { mutableStateListOf<String>() }
     var customDetails by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val isKeyBoardVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+
+    LaunchedEffect(Unit) {
+        if(User.currentUser != null) {
+            selectedOptions.addAll(User.currentUser!!.symptoms.split(",").map { it.trim() })
+        }
+        if(!options.contains(selectedOptions.last())) {
+            customDetails = selectedOptions.last()
+            selectedOptions.remove(customDetails)
+        }
+        Logger.e("SymptomsScreen", "Symptoms: ${selectedOptions.toList()}")
+    }
 
     LaunchedEffect(isKeyBoardVisible) {
         if (isKeyBoardVisible) {
@@ -74,6 +82,8 @@ fun SymptomsScreen(onSubmit: (String) -> Unit = {}) {
             options.forEach { option ->
                 Row(
                     modifier = Modifier
+                        .padding(0.dp)
+                        .height(35.dp)
                         .fillMaxWidth()
                         .clickOnce {
                             if (selectedOptions.contains(option))
@@ -84,6 +94,8 @@ fun SymptomsScreen(onSubmit: (String) -> Unit = {}) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
+                        modifier = Modifier
+                            .padding(0.dp),
                         checked = selectedOptions.contains(option),
                         onCheckedChange = {
                             if (it) selectedOptions.add(option) else selectedOptions.remove(
@@ -91,7 +103,7 @@ fun SymptomsScreen(onSubmit: (String) -> Unit = {}) {
                             )
                         }
                     )
-                    Text(option)
+                    Text(option, fontSize = 14.sp)
                 }
             }
 
@@ -110,7 +122,7 @@ fun SymptomsScreen(onSubmit: (String) -> Unit = {}) {
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
                 val symptoms =
-                    (selectedOptions + customDetails).filter { it.isNotBlank() }
+                    (selectedOptions + customDetails.trim()).filter { it.isNotBlank() }
                         .joinToString(", ")
                 if (symptoms == "")
                     error = true

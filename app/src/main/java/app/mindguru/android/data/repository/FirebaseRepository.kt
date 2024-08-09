@@ -23,6 +23,51 @@ class FirebaseRepository @Inject constructor(
     private val firestore: FirebaseFirestore = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
+    suspend fun updateFirstMessagePrompt(newPrompt: String) {
+        try {
+
+            Logger.e(TAG, "updateFirstMessagePrompt: $newPrompt")
+            val firestore = FirebaseFirestore.getInstance()
+            val auth = FirebaseAuth.getInstance()
+            val uid = auth.currentUser?.uid ?: return
+
+            val messagesCollection =
+                firestore.collection("Users").document(uid).collection("Messages")
+            val firstMessageSnapshot =
+                messagesCollection.orderBy("startTime").limit(1).get().await()
+
+            if (!firstMessageSnapshot.isEmpty) {
+                Logger.e(
+                    TAG,
+                    "updateFirstMessagePrompt: firstMessageSnapshot.size = ${firstMessageSnapshot.size()}"
+                )
+                val firstMessageDocument = firstMessageSnapshot.documents[0]
+                Logger.e(
+                    TAG,
+                    "updateFirstMessagePrompt: firstMessageDocument: ${
+                        firstMessageDocument.data?.get("prompt")
+                    }"
+                )
+                firstMessageDocument.reference.update("prompt", newPrompt).await()
+            }
+        }catch (e: Exception) {
+            Logger.e(TAG, "updateFirstMessagePrompt: ${e.message}")
+            Remote.captureException(e)
+        }
+    }
+
+    fun resetChat() {
+        if (!isLogged()) {
+            return
+        }
+        val uid = auth.uid ?: return
+        firestore.collection("Users").document(uid).collection("Messages").get().addOnSuccessListener { documents ->
+            for (document in documents) {
+                document.reference.delete()
+            }
+        }
+    }
+
     suspend fun sendMessage(prompt: String) {
         if (!isLogged()) {
             return

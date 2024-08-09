@@ -12,6 +12,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2024.06.00"
+playServicesTtsVersion = "18.0.0"
 roomRuntime = "2.6.1"
 sentry = "4.6.0"
 hilt = "2.52"
@@ -31,10 +32,14 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "19.0.0"
 constraintlayout = "2.1.4"
 
+jemoji = "1.4.1"
+
 [libraries]
+jemoji = { module = "net.fellbaum:jemoji", version.ref = "jemoji" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil-compose" }
 
+gms-play-services-tts = { module = "com.google.android.gms:play-services-tts", version.ref = "playServicesTtsVersion" }
 shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
 
 richtext-common = { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richtext" }

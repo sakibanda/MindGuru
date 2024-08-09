@@ -83,6 +83,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.jemoji)
+
     implementation (libs.coil.compose)
     implementation (libs.coil.gif)
 

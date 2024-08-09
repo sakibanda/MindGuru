@@ -1,6 +1,7 @@
 package app.mindguru.android.ui.User
 
 import android.app.Application
+import android.icu.util.Calendar
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -8,11 +9,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mindguru.android.MainActivityViewModel
 import app.mindguru.android.components.JavaUtils
+import app.mindguru.android.components.Utils
 import app.mindguru.android.data.model.User
 import app.mindguru.android.data.repository.FirebaseRepository
 import app.mindguru.android.data.repository.PreferenceRepository
 import com.google.protobuf.Internal.BooleanList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -69,17 +73,24 @@ class UserViewModel @Inject constructor(
                 user.relationship = relationship
                 user.country = country
                 user.employment = employment
-                user.symptoms = ""
+                user.symptoms = user.symptoms
             }
             firebaseRepository.updateUser(user)
+            if(User.currentUser!!.symptoms.isNotEmpty()) updateFirstMessagePrompt()
         }
     }
-
+    private fun updateFirstMessagePrompt(){
+        CoroutineScope(Dispatchers.IO).launch {
+            firebaseRepository.updateFirstMessagePrompt(Utils.getFirstPrompt())
+        }
+    }
     fun updateSymptoms(symptoms: String) {
         val user = User.currentUser
         if (user != null) {
+            val edit = user.symptoms.isNotEmpty()
             user.symptoms = symptoms
             firebaseRepository.updateUser(user)
+            if(edit) updateFirstMessagePrompt()
         }
     }
 

@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +36,7 @@ fun ToolBarPreview() {
 
 @Composable
 fun ToolBar(
-    title: String = "MindGuru",
+    title: String = stringResource(R.string.app_name),
     icon: Int = 0,
     navigateBack: (() -> Unit)? = null,
     menuOptions: (@Composable RowScope.() -> Unit)?  = null) {
@@ -44,7 +45,7 @@ fun ToolBar(
             .height(50.dp)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(5.dp),
+            .padding(0.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

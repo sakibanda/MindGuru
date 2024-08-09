@@ -5,21 +5,22 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.mindguru.android.ui.User.CallLoginScreen
-import app.mindguru.android.ui.User.CallMentalHealthScreen
-import app.mindguru.android.ui.User.CallUserDetailsScreen
-import app.mindguru.android.ui.Userimport.CallSymptomsScreen
-import app.mindguru.android.ui.chat.CallChatScreen
+import app.mindguru.android.data.model.User
+import app.mindguru.android.ui.User.ShowLoginScreen
+import app.mindguru.android.ui.User.ShowMentalHealthScreen
+import app.mindguru.android.ui.User.ShowUserDetailsScreen
+import app.mindguru.android.ui.Userimport.ShowSymptomsScreen
+import app.mindguru.android.ui.chat.ShowChatScreen
 
 @Composable
 fun Navigation(navController: NavHostController, startDestination: String, isLoggedIn: Boolean) {
     NavHost(navController = navController, startDestination = startDestination, modifier = Modifier.fillMaxSize()) {
         composable("MentalHealthScreen") {
-            CallMentalHealthScreen(navigateNext = { navController.navigate(if(isLoggedIn) "ChatScreen" else "LoginScreen") })
+            ShowMentalHealthScreen(navigateNext = { navController.navigate(if(isLoggedIn) "ChatScreen" else "LoginScreen") })
         }
 
         composable("LoginScreen") {
-            CallLoginScreen(navigateNext = { navController.navigate("UserDetailsScreen") {
+            ShowLoginScreen(navigateNext = { navController.navigate("UserDetailsScreen") {
                 popUpTo("MentalHealthScreen") {
                     inclusive = true
                 }
@@ -27,23 +28,31 @@ fun Navigation(navController: NavHostController, startDestination: String, isLog
         }
 
         composable("ChatScreen") {
-            CallChatScreen()
+            ShowChatScreen(navController = navController)
         }
 
         composable("SymptomsScreen") {
-            CallSymptomsScreen(navigateNext = { navController.navigate("ChatScreen") {
+            var navigateNext = { navController.navigate("ChatScreen") {
                 popUpTo("UserDetailsScreen") {
                     inclusive = true
                 }
-            } })
+            } }
+            if(User.currentUser!!.symptoms.isNotEmpty()) {
+                navigateNext = { navController.popBackStack() }
+            }
+            ShowSymptomsScreen(navigateNext = navigateNext)
         }
 
         composable("UserDetailsScreen") {
-            CallUserDetailsScreen(navigateNext = { navController.navigate("SymptomsScreen") {
+            var navigateNext = { navController.navigate("SymptomsScreen") {
                 popUpTo("LoginScreen") {
                     inclusive = true
                 }
-            } })
+            } }
+            if(User.currentUser!!.symptoms.isNotEmpty()) {
+                navigateNext = { navController.popBackStack() }
+            }
+            ShowUserDetailsScreen(navigateNext = navigateNext)
         }
     }
 }
