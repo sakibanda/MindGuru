@@ -7,6 +7,7 @@ import android.speech.SpeechRecognizer
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.rounded.Headphones
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -44,7 +47,9 @@ import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
-fun PromptBar(status:String = "", onSend: (String) -> Unit = {}) {
+fun PromptBar(status:String = "",
+              voiceChat: (Boolean) -> Unit = {},
+              onSend: (String) -> Unit = {}) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var hasFocus by remember { mutableStateOf(false) }
@@ -67,6 +72,7 @@ fun PromptBar(status:String = "", onSend: (String) -> Unit = {}) {
 
 
     Row(modifier = Modifier
+        .background(MaterialTheme.colorScheme.background)
         .padding(8.dp)
         .fillMaxWidth()) {
         Box(Modifier.weight(1f)){
@@ -130,10 +136,12 @@ fun PromptBar(status:String = "", onSend: (String) -> Unit = {}) {
                         focusManager.clearFocus()
                         onSend(prompt.trim())
                         prompt = ""
+                    }else{
+                        voiceChat(true)
                     }
             }) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    imageVector = if (prompt.isNotEmpty()) Icons.AutoMirrored.Rounded.Send else Icons.Rounded.Headphones,
                     contentDescription = "Send",
                     modifier = Modifier.size(25.dp)
                 )

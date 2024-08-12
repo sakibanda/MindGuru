@@ -1,7 +1,6 @@
 package app.mindguru.android.ui.chat
 
-import android.graphics.Path
-import android.graphics.RectF
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -139,11 +137,10 @@ fun ChatBubble(
             }
             Spacer(modifier = Modifier.width(8.dp))
         }else{
-            Icon(
+            Image(
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = "App Icon",
                 modifier = Modifier.size(25.dp),
-                tint = IconTint
             )
             Spacer(modifier = Modifier.width(8.dp))
         }

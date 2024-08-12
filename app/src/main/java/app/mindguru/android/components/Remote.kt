@@ -98,13 +98,20 @@ class Remote {
         }
 
         fun captureMessage(e: Exception){
-            Sentry.captureMessage(e.message ?: "Unknown error")
+            //Sentry.captureMessage(e.message ?: "Unknown error")
+            Logger.e("Remote", "captureMessage $e")
+            try {
+                //Sentry.captureMessage(message)
+                FirebaseCrashlytics.getInstance().log(e.message.toString())
+            } catch (e: Exception) {
+                captureException(e)
+            }
         }
 
         fun captureMessage(message: String){
             Logger.e("Remote", "captureMessage $message")
             try {
-                Sentry.captureMessage(message)
+                //Sentry.captureMessage(message)
                 FirebaseCrashlytics.getInstance().log(message)
             } catch (e: Exception) {
                 captureException(e)

@@ -1,6 +1,7 @@
 app/release
 app/build
 .gradle
+.idea
 keystores
 lvl_library
 /enkey

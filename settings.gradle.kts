@@ -19,4 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MindGuru"
 include(":app")
- 
+include(":sound")

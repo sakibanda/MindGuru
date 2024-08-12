@@ -1,19 +1,14 @@
 package app.mindguru.android.ui.User
 
 import android.app.Application
-import android.icu.util.Calendar
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.mindguru.android.MainActivityViewModel
 import app.mindguru.android.components.JavaUtils
 import app.mindguru.android.components.Utils
 import app.mindguru.android.data.model.User
 import app.mindguru.android.data.repository.FirebaseRepository
 import app.mindguru.android.data.repository.PreferenceRepository
-import com.google.protobuf.Internal.BooleanList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

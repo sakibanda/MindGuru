@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import app.mindguru.android.MainActivityViewModel
+import app.mindguru.android.ui.MainActivityViewModel
 import app.mindguru.android.R
 import app.mindguru.android.ui.chat.ChatBubble
 import app.mindguru.android.ui.components.ToolBar

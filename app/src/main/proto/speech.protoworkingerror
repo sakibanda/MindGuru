@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package google.cloud.speech.v1;
+
+service Speech {
+    rpc StreamingRecognize (stream StreamingRecognizeRequest) returns (stream StreamingRecognizeResponse);
+}
+
+message StreamingRecognizeRequest {
+    Config config = 1;
+    Audio audio = 2;
+}
+
+message Config {
+    string encoding = 1;
+    int32 sampleRateHertz = 2;
+    string languageCode = 3;
+}
+
+message Audio {
+    bytes content = 1;
+}
+
+message StreamingRecognizeResponse {
+    repeated Result results = 1;
+}
+
+message Result {
+    repeated Alternative alternatives = 1;
+}
+
+message Alternative {
+    string transcript = 1;
+}

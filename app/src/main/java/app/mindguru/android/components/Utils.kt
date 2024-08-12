@@ -23,7 +23,9 @@ class Utils {
 
     companion object {
         fun getFirstPrompt(): String{
-            val age  = 2024 - User.currentUser!!.dob.drop(6).toInt()
+            var age  = 0
+            if(User.currentUser!!.dob.isNotEmpty())
+                age  = 2024 - User.currentUser!!.dob.drop(6).toInt()
             var userProfile = "Hi, "
             User.currentUser!!.apply {
                 if(name != "" && dob != "" && gender != "" && employment != "" && country != "")
@@ -32,7 +34,7 @@ class Utils {
                 else {
                     if (name != "")
                         userProfile += "My name is ${User.currentUser!!.name}."
-                    if (dob != "")
+                    if (dob != "" && age != 0)
                         userProfile += "I am $age years old."
                     if (gender != "")
                         userProfile += "I am $gender. "

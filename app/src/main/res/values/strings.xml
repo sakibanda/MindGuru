@@ -11,4 +11,17 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="sign_in_with_google">Login with Google</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="stop">Stop</string>
+    <string name="voice_chat_ended">Voice Chat Closed</string>
+    <string name="voice_chat">Voice Chat Running</string>
+    <string name="voice_chat_allow_mic_perm">Allow Microphone permission for Voice Chat.</string>
+    <string name="voice_chat_lang_selected">Your language is %1$s.</string>
+    <string name="voice_chat_close">Please, close voice chat</string>
+    <string name="voice_chat_disabled">Voice Chat Disabled</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
+    <string name="notifications_permission_confirm_title">Track Your Mood</string>
+    <string name="notifications_permission_confirm_message">You can track and analyse your mood using the app. Allow notifications to enable tracking.</string>
+
 </resources>

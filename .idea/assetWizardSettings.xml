@@ -69,6 +69,7 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="C:\Users\devai\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -80,7 +81,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="D:\Windows\Desktop\mindfulness_100dp_5F6368_FILL0_wght400_GRAD0_opsz48.svg" />
+                                                <entry key="imagePath" value="D:\Windows\Desktop\app_icon.svg" />
                                                 <entry key="scalingPercent" value="77" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
@@ -94,6 +95,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -105,6 +107,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -115,7 +118,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="009052" />
+                                      <entry key="backgroundColor" value="000000" />
                                       <entry key="outputName" value="app_icon" />
                                     </map>
                                   </option>
@@ -306,8 +309,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="app_icon_round" />
-                            <entry key="sourceFile" value="D:\Windows\Desktop\app_icon_round.svg" />
+                            <entry key="outputName" value="app_icon" />
+                            <entry key="sourceFile" value="D:\Windows\Desktop\app_icon.svg" />
                           </map>
                         </option>
                       </PersistentState>

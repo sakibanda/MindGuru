@@ -184,7 +184,7 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     NormalLoginButton(
-                        text = stringResource(if (Remote.getInt("SIGN_IN_MODE") == SignInType.Guest.ordinal) R.string.user_continue else R.string.continue_guest),
+                        text = stringResource(R.string.continue_guest),//if (Remote.getInt("SIGN_IN_MODE") == SignInType.Guest.ordinal) R.string.user_continue else
                         onClick = onNormalButtonClick
                     )
                 }

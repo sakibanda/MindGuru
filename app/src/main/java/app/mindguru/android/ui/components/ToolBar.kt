@@ -1,5 +1,6 @@
 package app.mindguru.android.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mindguru.android.R
+import app.mindguru.android.ui.theme.IconTint
 
 @Preview(showBackground = true)
 @Composable
@@ -59,10 +61,9 @@ fun ToolBar(
         Row(if (navigateBack == null) Modifier.weight(1f) else Modifier, verticalAlignment = Alignment.CenterVertically) {
             if(icon != 0) {
                 Spacer(Modifier.weight(1f))
-                Icon(
+                Image(
                     painter = painterResource(id = icon),
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = "Icon",
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(Modifier.width(10.dp)) // Placeholder for icon space

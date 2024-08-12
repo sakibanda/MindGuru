@@ -1,4 +1,4 @@
-package app.mindguru.android
+package app.mindguru.android.ui
 
 import android.app.Application
 import android.content.Intent
